@@ -135,10 +135,10 @@
     - sql
     - resultMap
         - 级联
-        - association：javaType|select
-        - collection：ofType|select
+        - association：javaType/select
+        - collection：ofType/select
     - parameterMap
-    - select|insert|update|delete
+    - select/insert/update/delete
 - spring.xml
     - PageInterceptor分页插件
     - SqlSessionFactoryBean管理SqlSession
