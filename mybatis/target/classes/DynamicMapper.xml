@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atguigu.mybatis.mapper.DynamicMapper">
+
+    <!--
+    void bathUpdateEmpByArray(Employee[] array);
+    -->
+    <update id="bathUpdateEmpByArray">
+        <foreach collection="array" item="emp">
+            update emp set ename = #{emp.name}, age = #{emp.age}, sex = #{emp.sex} where eid = #{emp.id};
+        </foreach>
+    </update>
+
+    <!--
+    void bathInsertEmpByArray(Employee[] array);
+    -->
+    <insert id="bathInsertEmpByArray">
+        insert into emp(ename, age, sex) values
+        <foreach collection="array" item="emp" separator=",">
+            (#{emp.name}, #{emp.age}, #{emp.sex})
+        </foreach>
+    </insert>
+
+    <!--
+    void batchDeleteEmpByList(List<Integer> list);
+    -->
+    <delete id="batchDeleteEmpByList">
+<!--        delete from emp where eid in-->
+<!--        <foreach collection="list" item="eid" open="(" close=")" separator=",">-->
+<!--            #{eid}-->
+<!--        </foreach>-->
+        delete from emp where
+        <foreach collection="list" item="eid" separator="or">
+            eid = #{eid}
+        </foreach>
+    </delete>
+
+    <!--
+    void batchDeleteEmpByStr(String id);
+    -->
+    <delete id="batchDeleteEmpByStr">
+        delete from emp where eid in (${value})
+    </delete>
+
+    <!--
+    List<Employee> multiQueryEmp(Employee e);
+    -->
+    <select id="multiQueryEmp" resultType="com.atguigu.mybatis.bean.Employee">
+        select eid id, ename name, age, sex from emp
+        <where>
+            <choose>
+                <when test="id != null">
+                    eid = #{id}
+                </when>
+                <when test="name != null and name !=''">
+                    ename = #{name}
+                </when>
+                <when test="age != null">
+                    age = #{age}
+                </when>
+                <when test='sex == "男" or sex == "女"'>
+                    sex = #{sex}
+                </when>
+                <otherwise>
+                    1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+<!--
+    trim：截取并拼接
+    - prefix：在操作的sql语句之前加入某些内容
+    - suffix：在操作的sql语句之后加入某些内容
+    - prefixOverrides：把操作的sql语句前的某些内容去掉
+    - suffixOverrides：把操作的sql语句后的某些内容去掉
+    <select id="multiQueryEmp" resultType="com.atguigu.mybatis.bean.Employee">
+        select eid id, ename name, age, sex from emp
+        <trim prefix="where" prefixOverrides="" suffix="" suffixOverrides="and|or">
+            <if test='id != null'>
+                eid = #{id} and
+            </if>
+            <if test='name != null and name != ""'>
+                ename = #{name} and
+            </if>
+            <if test='age != null'>
+                age = #{age} or
+            </if>
+            <if test='sex == "男" or sex == "女"'>
+                sex = #{sex}
+            </if>
+        </trim>
+    </select>
+-->
+
+<!--
+    if：通过test表达式拼接sql
+    where：添加WHERE关键字同时去掉多余的and
+    <select id="multiQueryEmp" resultType="com.atguigu.mybatis.bean.Employee">
+        select eid id, ename name, age, sex from emp
+        <where>
+            <if test='id != null'>
+                eid = #{id}
+            </if>
+            <if test='name != null and name != ""'>
+                and ename = #{name}
+            </if>
+            <if test='age != null'>
+                and age = #{age}
+            </if>
+            <if test='sex == "男" or sex == "女"'>
+                and sex = #{sex}
+            </if>
+        </where>
+    </select>
+-->
+</mapper>

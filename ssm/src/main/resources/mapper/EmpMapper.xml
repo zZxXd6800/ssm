@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.EmpMapper">
+
+<!--    <resultMap id="empMap" type="employee">-->
+<!--        <id column="eid" property="id"/>-->
+<!--        <result column="ename" property="name"/>-->
+<!--        <result column="age" property="age"/>-->
+<!--        <result column="sex" property="sex"/>-->
+<!--        <result column="did" property="dept.id"/>-->
+<!--        <result column="dname" property="dept.name"/>-->
+<!--    </resultMap>-->
+
+<!--    <resultMap id="empMap" type="employee">-->
+<!--        <id column="eid" property="id"/>-->
+<!--        <result column="ename" property="name"/>-->
+<!--        <result column="age" property="age"/>-->
+<!--        <result column="sex" property="sex"/>-->
+<!--        <association column="did" property="dept" select="com.atguigu.mapper.DeptMapper.getDeptById"/>-->
+<!--    </resultMap>-->
+
+    <resultMap id="empMap" type="employee">
+        <id column="eid" property="id"/>
+        <result column="ename" property="name"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <association property="dept" javaType="department">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
+
+    <!--
+    List<Employee> getAllEmp();
+    -->
+    <select id="getAllEmp" resultMap="empMap">
+        select e.eid, e.ename, e.age, e.sex, d.did, d.dname from emp e left join dept d on e.did = d.did
+    </select>
+
+    <!--
+    Employee getEmpById(String id);
+    -->
+    <select id="getEmpById" resultMap="empMap">
+        select e.eid, e.ename, e.age, e.sex, d.did, d.dname from emp e left join dept d on e.did = d.did where e.eid = #{id}
+    </select>
+
+    <!--
+    Integer insertEmp(Employee emp);
+    -->
+    <insert id="insertEmp">
+        insert into emp values (null, #{name}, #{age}, #{sex}, #{dept.id})
+    </insert>
+
+    <!--
+    Integer updateEmpById(Employee emp);
+    -->
+    <update id="updateEmpById">
+        update emp set ename = #{name}, age = #{age}, sex = #{sex}, did = #{dept.id} where eid = #{id}
+    </update>
+
+    <!--
+    Integer deleteEmpById(String id);
+    -->
+    <delete id="deleteEmpById">
+        delete from emp where eid = #{id}
+    </delete>
+</mapper>

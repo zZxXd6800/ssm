@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    - 接口全限定名要和映射文件的namespace保持一致
+    - 接口中的方法名要和sql语句中的id保持一致
+-->
+<mapper namespace="com.atguigu.mybatis.mapper.DeptMapper">
+
+    <!--分步查询，延迟加载-->
+    <resultMap id="deptMapStep" type="com.atguigu.mybatis.bean.Department">
+        <id column="did" property="id"/>
+        <result column="dname" property="name"/>
+        <collection property="emps" select="com.atguigu.mybatis.mapper.EmpMapper.getEmpByDeptId" column="did" fetchType="lazy"/>
+    </resultMap>
+
+    <!--自定义映射查询-->
+    <resultMap id="deptMap" type="com.atguigu.mybatis.bean.Department">
+        <id column="did" property="id"/>
+        <result column="dname" property="name"/>
+        <collection property="emps" ofType="com.atguigu.mybatis.bean.Employee">
+            <id column="eid" property="id"/>
+            <result column="ename" property="name"/>
+            <result column="age" property="age"/>
+            <result column="sex" property="sex"/>
+        </collection>
+    </resultMap>
+
+    <!--
+    Department getDeptById(String id);
+    -->
+    <select id="getDeptById" resultMap="deptMapStep">
+        select did, dname from dept where did = #{id}
+    </select>
+
+    <!--
+    List<Department> getAllDDept();
+    -->
+    <select id="getAllDept" resultMap="deptMapStep">
+        select did, dname from dept
+    </select>
+
+    <!--
+    Department getDeptWithEmps(String id);
+    -->
+    <select id="getDeptWithEmps" resultMap="deptMap">
+        select d.did, d.dname, e.eid, e.ename, e.age, e.sex from dept d left join emp e on d.did = e.did where d.did = #{id}
+    </select>
+</mapper>

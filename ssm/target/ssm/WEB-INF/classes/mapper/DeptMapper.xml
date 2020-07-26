@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.DeptMapper">
+
+    <resultMap id="deptMap" type="department">
+        <id column="did" property="id"/>
+        <result column="dname" property="name"/>
+        <collection property="emp" ofType="employee">
+            <id column="eid" property="id"/>
+            <result column="ename" property="name"/>
+            <result column="age" property="age"/>
+            <result column="sex" property="sex"/>
+        </collection>
+    </resultMap>
+
+    <!--
+    List<Department> getAllDept();
+    -->
+    <select id="getAllDept" resultMap="deptMap">
+        select d.did, d.dname, e.eid, e.ename, e.age, e.sex from dept d left join emp e on d.did = e.did
+    </select>
+
+
+    <!--
+    Department getDeptById(String id);
+    -->
+    <select id="getDeptById" resultType="department">
+        select did id, dname name from dept where did = #{id}
+    </select>
+
+</mapper>

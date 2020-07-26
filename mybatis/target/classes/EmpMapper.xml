@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atguigu.mybatis.mapper.EmpMapper">
+    <!--
+    Employee getEmpById(String id);
+    -->
+    <select id="getEmpById" resultType="com.atguigu.mybatis.bean.Employee">
+        select eid id, ename name, age, sex from emp where eid = #{id}
+    </select>
+
+    <!--
+    Employee getEmpByIdAndNameWithParam(@Param("arg1")String id, @Param("arg2")String name);
+    -->
+    <select id="getEmpByIdAndNameWithParam" resultType="com.atguigu.mybatis.bean.Employee">
+        select eid id, ename name, age, sex from emp where eid = #{arg1} and ename = #{arg2}
+    </select>
+
+    <!--
+    List<Employee> getEmpByDeptId(String id);
+    -->
+    <select id="getEmpByDeptId" resultType="com.atguigu.mybatis.bean.Employee">
+        select eid id, ename name, age, sex from emp where did = #{id}
+    </select>
+
+    <!--
+    分步查询
+    select：分步查询SQL的id
+    column：分步查询的条件，必须是将从数据库查询获得的结果作为条件传给分步查询
+    -->
+    <resultMap id="empStep" type="com.atguigu.mybatis.bean.Employee">
+        <id column="eid" property="id"/>
+        <result column="ename" property="name"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <association property="dept" select="com.atguigu.mybatis.mapper.DeptMapper.getDeptById" column="did" fetchType="lazy"/>
+    </resultMap>
+    <!--
+    Employee getEmpStep(String id);
+    -->
+    <select id="getEmpStep" resultMap="empStep">
+        select eid, ename, age, sex, did from emp where eid = #{id}
+    </select>
+
+    <!--
+    Employee和Department是多对一的关系
+    id：设置主键的映射关系，column设置字段名，property设置属性名
+    result：设置其他字段的映射关系
+    association：一对一；多对一
+    collection：一对多；多对多
+    -->
+    <!--
+    <resultMap id="empMap" type="com.atguigu.mybatis.bean.Employee">
+        <id column="eid" property="id"/>
+        <result column="ename" property="name"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <result column="did" property="dept.id"/>
+        <result column="dname" property="dept.name"/>
+    </resultMap>
+    -->
+    <resultMap id="empMap" type="com.atguigu.mybatis.bean.Employee">
+        <id column="eid" property="id"/>
+        <result column="ename" property="name"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <association property="dept" javaType="com.atguigu.mybatis.bean.Department">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
+    <!--
+    List<Employee> getAllEmp();
+    -->
+    <select id="getAllEmp" resultMap="empMap">
+        select e.eid, e.ename, e.age, e.sex, e.did, d.dname from emp e left join dept d on e.did = d.did
+    </select>
+
+    <!--
+    void addEmp(Employee emp);
+    -->
+    <insert id="addEmp" parameterType="com.atguigu.mybatis.bean.Employee" useGeneratedKeys="true" keyProperty="id">
+        insert into emp(ename, age, sex) values (#{name}, #{age}, #{sex})
+    </insert>
+
+    <!--
+    void updateEmp(Employee emp);
+    -->
+    <update id="updateEmp" parameterType="com.atguigu.mybatis.bean.Employee">
+        update emp set ename = #{name}, age = #{age}, sex = #{sex} where eid = #{id}
+    </update>
+
+    <!--
+    void deleteEmp(String id);
+    -->
+    <delete id="deleteEmp" parameterType="java.lang.String">
+        delete from emp where eid = #{id}
+    </delete>
+</mapper>

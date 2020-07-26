@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <!--
+    <properties>：引入外部资源
+        resource：引入类路径下的资源
+        url：引入网络路径或磁盘路径下的资源
+    -->
+    <properties resource="jdbc.properties"/>
+    <!--
+    <properties >
+        <property name="jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbc.url" value="jdbc:mysql:///ssm?serverTimezone=Asia/Shanghai"/>
+        <property name="jdbc.username" value="root"/>
+        <property name="jdbc.password" value="root"/>
+    </properties>
+    -->
+
+    <!--
+    <settings>：修改MyBatis运行时行为方式
+    -->
+    <settings>
+<!--        &lt;!&ndash;将下划线命名映射为驼峰命名&ndash;&gt;-->
+<!--        <setting name="mapUnderscoreToCamelCase" value="true"/>-->
+<!--        &lt;!&ndash;是否启用延迟加载&ndash;&gt;-->
+<!--        <setting name="lazyLoadingEnabled" value="true "/>-->
+<!--        &lt;!&ndash;是否加载对象的所有延迟属性&ndash;&gt;-->
+<!--        <setting name="aggressiveLazyLoading" value="false "/>-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <!--
+    <typeAliases>：类型别名
+        <typeAlias>：为type指定的Java类型设置alias别名，alias缺省时默认为类名且不区分大小写
+        <package>：默认为package下的所有类设置默认别名(不区分大小写的类名)
+    -->
+<!--    <typeAliases>-->
+<!--        <typeAlias type="com.atguigu.mybatis.bean.User" alias="user"/>-->
+<!--        <package name="com.atguigu.mybatis"/>-->
+<!--    </typeAliases>-->
+
+    <!--
+    <typeHandlers>：
+    -->
+
+    <!--
+    <objectFactory>
+    -->
+
+    <!--
+    <plugins>：引入插件
+    -->
+
+    <!--
+    <environments>：设置连接数据库的环境
+        default：默认使用的数据库环境
+        <environment>：设置某个具体的数据库环境
+            id：当前数据库环境唯一标识
+            <transactionManager>：事务管理器(JDBC|MANAGED)
+            <dataSource>：数据源(POOLED|UNPOOLED|JNDI|)
+    -->
+    <environments default="mysql">
+        <environment id="mysql">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driverClassName}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--
+    <databaseIdProvider>
+    -->
+
+    <!--
+    <mappers>：引入映射文件
+    -->
+    <mappers>
+        <!--mapper接口和mapper配置文件必须在同一个包，且名称必须相同-->
+<!--        <package name="com.atguigu.mybatis.mapper"/>-->
+        <mapper resource="UserMapper.xml"/>
+        <mapper resource="EmpMapper.xml"/>
+        <mapper resource="DeptMapper.xml"/>
+        <mapper resource="DynamicMapper.xml"/>
+    </mappers>
+</configuration>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atguigu.mybatis.mapper.UserMapper">
+    <!--
+        select：定义查询语句
+        id：sql语句唯一标识
+        resultType：返回结果类型
+    -->
+    <!--
+        #{id}：对应PreparedStatement，括号内填方法形参
+    -->
+    <select id="getUserById1" resultType="com.atguigu.mybatis.bean.User">select uid id, uname name, password, age, sex from user where uid = #{id}</select>
+
+    <!--
+        ${value}：对应Statement，括号内必须写value
+        批量删除和模糊查询必须使用Statement拼接sql字符串
+    -->
+    <select id="getUserById2" resultType="com.atguigu.mybatis.bean.User">select uid id, uname name, password, age, sex from user where uid = ${value}</select>
+</mapper>

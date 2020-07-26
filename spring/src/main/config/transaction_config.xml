@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 配置数据库连接池 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <property name="url" value="jdbc:mysql:///db_test?serverTimezone=Asia/Shanghai"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+    </bean>
+
+    <!-- 配置JDBCTemplate对象，引入数据库连接池 -->
+    <bean id="template" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 配置事务通知 -->
+    <tx:advice id="advice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- 在切入点表达式下再次进行事务设置，当前切入点表达式下哪些方法需要进行事务管理 -->
+            <tx:method name="accountMoney"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 配置切入点表达式 -->
+    <aop:config>
+        <aop:pointcut id="p" expression="execution(* com.atguigu.spring.transaction.service.AccountServiceXML.accountMoney(..))"/>
+        <aop:advisor advice-ref="advice" pointcut-ref="p"/>
+    </aop:config>
+
+    <bean id="accountDaoXML" class="com.atguigu.spring.transaction.dao.AccountDaoImplXML">
+        <property name="template" ref="template"/>
+    </bean>
+
+    <bean id="accountServiceXML" class="com.atguigu.spring.transaction.service.AccountServiceXML">
+        <property name="accountDao" ref="accountDaoXML"/>
+    </bean>
+</beans>

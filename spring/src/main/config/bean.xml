@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="user" class="com.atguigu.spring.xml.User"/>
+
+    <bean id="user1" class="com.atguigu.spring.xml.User">
+        <property name="id" value="1"/>
+        <property name="name" value="u1"/>
+    </bean>
+
+    <bean id="user2" class="com.atguigu.spring.xml.User">
+        <constructor-arg name="id" value="2"/>
+        <constructor-arg name="name" value="u2"/>
+    </bean>
+
+    <bean id="user3" class="com.atguigu.spring.xml.User">
+        <constructor-arg index="0" value="3"/>
+        <constructor-arg index="1" value="u3"/>
+    </bean>
+
+    <bean id="user4" class="com.atguigu.spring.xml.User" p:id="4" p:name="u4"/>
+
+    <!--设置属性为null-->
+    <bean id="user5" class="com.atguigu.spring.xml.User">
+        <property name="id" value="5"/>
+        <property name="name">
+            <null/>
+        </property>
+    </bean>
+
+    <!--级联, 必须要有getter和setter-->
+    <bean id="employee" class="com.atguigu.spring.xml.Employee">
+        <property name="name" value="employee"/>
+        <property name="gender" value="female"/>
+        <property name="dept" ref="dept"/>
+        <property name="dept.name" value="deptName"/>
+    </bean>
+    <bean id="dept" class="com.atguigu.spring.xml.Department"/>
+
+    <!--内部bean-->
+    <bean id="emp" class="com.atguigu.spring.xml.Employee">
+        <property name="name" value="emp1"/>
+        <property name="gender" value="male"/>
+        <property name="dept">
+            <bean class="com.atguigu.spring.xml.Department">
+                <property name="name" value="dept1"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Array, List, Set, Map, Properties -->
+    <bean id="stu" class="com.atguigu.spring.xml.Student">
+        <!--array-->
+        <property name="array">
+            <array>
+                <value>a1</value>
+                <value>a2</value>
+                <value>a3</value>
+            </array>
+        </property>
+        <!--list-->
+        <property name="list">
+            <list>
+                <value>l1</value>
+                <value>l2</value>
+                <value>l3</value>
+                <value>l4</value>
+            </list>
+        </property>
+        <!--set-->
+        <property name="set">
+            <set>
+                <value>s1</value>
+                <value>s1</value>
+                <value>s2</value>
+            </set>
+        </property>
+        <!--map-->
+        <property name="map">
+            <map>
+                <entry key="k1" value="v1"/>
+                <entry key="k1" value="v2"/>
+                <entry key="k2" value="v2"/>
+                <entry key="k3" value="v3"/>
+            </map>
+        </property>
+        <property name="prop">
+            <props>
+                <prop key="p1">pv1</prop>
+                <prop key="p1">pv2</prop>
+                <prop key="p2">pv2</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--通过FactoryBean的实现类配置bean-->
+    <bean id="myBean" class="com.atguigu.spring.xml.MyFactoryBean"/>
+
+</beans>
